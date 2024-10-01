@@ -16,15 +16,14 @@ const menuData = [
   { id: '1', name: 'Grilled Salmon', description: 'Delicious grilled salmon', course: 'Main', price: 25 },
   { id: '2', name: 'Caesar Salad', description: 'Classic Caesar salad', course: 'Starter', price: 10 },
   { id: '3', name: 'Chocolate Cake', description: 'Rich chocolate dessert', course: 'Dessert', price: 12 },
-  { id: '4', name: 'Chicken Wings', description: 'Spicy chicken wings', course: 'Starter', price: 15 },
-  { id: '5', name: 'Steak', description: 'Juicy grilled steak', course: 'Main', price: 30 },
+  // Add more menu items as needed
 ];
 
 // Welcome Screen
 function WelcomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>WELCOME TO CHRISTOFFEL PALATE PLEASURE</Text>
+      <Text style={styles.title}>WELCOME AT CHRISTOFFEL PALATE PLEASURE</Text>
       <Button title="Next" onPress={() => navigation.navigate('Menu')} />
     </View>
   );
@@ -34,35 +33,25 @@ function WelcomeScreen({ navigation }) {
 function MenuScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredMenu, setFilteredMenu] = useState(menuData);
-  const [selectedCourse, setSelectedCourse] = useState(null);
-  
+
+  // Filter menu items based on the search query
+  const handleSearch = (text) => {
+    setSearchQuery(text);
+    const filtered = menuData.filter(item =>
+      item.name.toLowerCase().includes(text.toLowerCase()) ||
+      item.description.toLowerCase().includes(text.toLowerCase())
+    );
+    setFilteredMenu(filtered);
+  };
+
   // Dropdown Picker state
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([
-    { label: 'Starter', value: 'Starter' },
-    { label: 'Main', value: 'Main' },
-    { label: 'Dessert', value: 'Dessert' },
+    { label: 'Starter', value: 'starter' },
+    { label: 'Main', value: 'main' },
+    { label: 'Dessert', value: 'dessert' },
   ]);
-
-  // Filter menu items based on the search query and course
-  const handleSearch = (text) => {
-    setSearchQuery(text);
-    filterMenu(text, selectedCourse);
-  };
-
-  const handleCourseChange = (course) => {
-    setSelectedCourse(course);
-    filterMenu(searchQuery, course);
-  };
-
-  const filterMenu = (text, course) => {
-    const filtered = menuData.filter(item =>
-      (item.name.toLowerCase().includes(text.toLowerCase()) || item.description.toLowerCase().includes(text.toLowerCase())) &&
-      (!course || item.course === course)
-    );
-    setFilteredMenu(filtered);
-  };
 
   return (
     <View style={styles.container}>
@@ -74,13 +63,13 @@ function MenuScreen({ navigation }) {
         onChangeText={handleSearch}
       />
 
-      {/* Dropdown Picker for course */}
+      {/* Dropdown Picker */}
       <DropDownPicker
         open={open}
         value={value}
         items={items}
         setOpen={setOpen}
-        setValue={handleCourseChange}
+        setValue={setValue}
         setItems={setItems}
         placeholder="Select Course"
         containerStyle={styles.dropdown}
